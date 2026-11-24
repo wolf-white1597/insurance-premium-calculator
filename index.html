@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="color-scheme" content="light" />
-<title>保費曲線實驗室｜全球人壽重大傷病與附約試算</title>
+<title>保費曲線實驗室 V3｜重大傷病雙方案試算比較</title>
 <style>
 :root{--bg:#f7f8f6;--panel:#ffffff;--ink:#193236;--muted:#728287;--line:#dfe8e5;--teal:#006e68;--mint:#e8f6f0;--green:#107d72;--blue:#5575b7;--orange:#dc8849;--purple:#8f72c4;--red:#bb5959;--shadow:0 14px 44px rgba(34,78,69,.055)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","Microsoft JhengHei",Segoe UI,sans-serif;font-size:14px;line-height:1.6}button,select,input{font:inherit}button{cursor:pointer}a{color:var(--teal)}
@@ -13,18 +13,36 @@
 @media(max-width:1020px){.shell{grid-template-columns:305px minmax(0,1fr)}.left{padding:20px 17px}.kpis{gap:9px}.kpi{padding:10px}.breakdown{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.top{padding:19px 18px 78px}.top .brand{font-size:14px}.top p{font-size:12px}.shell{display:flex;flex-direction:column;margin-top:-52px;padding:0 12px 30px}.left{position:static;width:100%;padding:19px}.right{width:100%}.hero-card,.chart-panel,.list-panel{padding:18px 15px}.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi.primary-kpi{grid-column:1/3}.kpi strong{font-size:23px}.kpi.primary-kpi strong{font-size:32px}.breakdown{grid-template-columns:repeat(2,1fr)}.chart-box{min-height:250px}.chart-box svg{height:255px}.chart-actions{width:100%;justify-content:space-between}.legend{gap:9px}.footer{padding:0 18px}}
 @media print{.top{padding:15px}.top p,.offline,.left,.chart-actions,.btns,.notes,.footer,.age-focus input,.list-panel .btn{display:none!important}.shell{display:block;margin:0;max-width:none}.right{gap:10px}.panel{box-shadow:none;break-inside:avoid}.chart-box svg{height:250px}.table-scroll{max-height:none;overflow:visible}.year-table td,.year-table th{padding:4px 7px;font-size:10px}}
+
+/* V3: independent two-plan comparison */
+.scenario-switch{background:#f3f7f5;border:1px solid #e1ebe6;border-radius:14px;padding:12px;margin:0 0 19px}
+.scenario-switch .seg{background:#e8efeb}.scenario-switch .seg button{min-height:37px}.scenario-switch .seg button.active[data-plan="A"]{box-shadow:0 0 0 1px #00827635;background:#dcf3ea;color:#006e68}.scenario-switch .seg button.active[data-plan="B"]{box-shadow:0 0 0 1px #6b77bb35;background:#ebeffe;color:#5061aa}
+.scenario-switch p{font-size:11px;color:#657b74;margin:7px 0 0}.plan-controls{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}.plan-controls .btn{padding:7px 9px}.plan-compare-toggle{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:750}.plan-compare-toggle input{accent-color:#00796f;width:16px;height:16px}
+.dual-panel{padding:22px 23px}.dual-panel[hidden]{display:none!important}.dual-metrics{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:18px}.dual-metric{border:1px solid #dce8e2;border-radius:13px;padding:15px;background:#f7fbf8}.dual-metric.b{background:#f6f7fd;border-color:#e1e4f2}.dual-metric h3{margin:0;font-size:14px;color:#00796f}.dual-metric.b h3{color:#6473ac}.dual-metric p{margin:4px 0 12px;color:#657b77;font-size:11px;min-height:36px}.dual-metric .value-row{display:flex;justify-content:space-between;gap:6px;align-items:baseline;border-top:1px solid #dde8e4;padding:8px 0;font-size:12px}.dual-metric .value-row b{font-size:16px;font-variant-numeric:tabular-nums}.dual-metric .value-row:last-child{padding-bottom:0}
+.dual-focus{margin:14px 0 12px;border:1px solid #e2e9e5;background:#fbfcfb;border-radius:12px;padding:13px 15px}.dual-focus .age-top{font-size:12px}.dual-focus .age-top output{font-size:16px;font-weight:800;color:#0a766e}
+.dual-legend{display:flex;gap:15px;flex-wrap:wrap;margin:11px 0 6px;font-size:11px;color:#526965}.dual-legend i{display:inline-block;width:15px;height:3px;background:var(--c);border-radius:4px;vertical-align:middle;margin-right:5px}
+.dual-info{background:#f3f8f5;border-radius:12px;color:#42655b;padding:12px 14px;font-size:12px;margin:10px 0 0}.dual-info b{color:#184b43}.dual-error{background:#fff4e9;color:#87522c;padding:14px;border-radius:12px;font-size:12px;margin-top:12px}
+.dual-table .year-table th,.dual-table .year-table td{font-size:11px;padding:9px 10px}.dual-table td.diff-positive{color:#a25445;font-weight:700}.dual-table td.diff-negative{color:#006e68;font-weight:700}
+#dualChart{cursor:crosshair}
+@media(max-width:760px){.dual-panel{padding:18px 15px}.dual-metrics{gap:8px}.dual-metric{padding:11px}.dual-metric .value-row{display:block}.dual-metric .value-row b{display:block}.dual-metric p{min-height:58px}}
 </style>
 </head>
 <body>
 <header class="top"><div class="top-inner">
 <div class="brand"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 8 4v6c0 5-3.6 8.4-8 10-4.4-1.6-8-5-8-10V6l8-4Z"/><path d="M8 12.5h8M12 8.5v8"/></svg></span>保費曲線實驗室 <span class="offline">● 單檔離線試算</span></div>
 <span class="eyebrow">INSURANCE PREMIUM LAB</span>
-<h1>看見每一年，<br>保費會怎麼變。</h1>
-<p>選擇投保年齡、主約繳費期、保額與附約，立即比較年度保費與長期累計支出。所有計算在裝置上進行，無需登入。</p>
+<h1>兩套保障配置，<br>逐年並排比較。</h1>
+<p>方案 A／B 可分別選擇投保年齡、主約繳費期、保額與附約，直接比較逐年保費、保障額度及累計支出。所有計算在裝置上進行，無需登入。</p>
 </div></header>
 <main class="shell">
 <aside class="panel left" aria-label="試算設定">
-<div class="section-title">試算條件 <span class="pill">可自由調整</span></div>
+<div class="section-title">試算條件 <span class="pill">雙方案 · V3</span></div>
+<div class="scenario-switch">
+ <div class="field-label">目前正在編輯的方案</div>
+ <div class="seg" role="group" aria-label="切換編輯方案"><button class="active" id="planABtn" data-plan="A" type="button" aria-pressed="true">方案 A</button><button id="planBBtn" data-plan="B" type="button" aria-pressed="false">方案 B</button></div>
+ <div class="plan-controls"><label class="plan-compare-toggle"><input id="dualOn" type="checkbox" checked>開啟 A／B 雙方案比較</label><button id="copyAToB" class="btn" type="button" title="將方案A條件全部複製到方案B">複製 A → B</button></div>
+ <p>兩套設定分開保存。先設定 A，再切換 B；下方會依年齡比較年度與累計保費。</p>
+</div>
 <div class="field"><div class="field-label">被保險人性別</div><div class="seg" role="group" aria-label="性別"><button id="femaleBtn" type="button" class="active" aria-pressed="true">女性</button><button id="maleBtn" type="button" aria-pressed="false">男性</button></div></div>
 <div class="field"><label class="field-label" for="mainProduct">重大傷病主約商品</label><select id="mainProduct"><option value="DCE">醫卡讚85重大傷病定期健康保險（DCE）</option><option value="DCF">醫卡好重大傷病終身健康保險（DCF）</option></select></div>
 <div class="row2">
@@ -44,11 +62,20 @@
 </aside>
 <section class="right" aria-live="polite">
  <article class="panel hero-card">
-  <div class="hero-h"><div><h2>這份保單的保費概覽</h2><p id="configSummary">—</p></div><span class="pill">年繳標準費率</span></div>
+  <div class="hero-h"><div><h2>目前編輯方案的保費概覽</h2><p id="configSummary">—</p></div><span class="pill">目前編輯的方案</span></div>
   <div class="kpis"><div class="kpi primary-kpi"><small>投保首年保費</small><strong id="firstYear">—</strong><em id="firstMonthly">平均每月 —</em></div><div class="kpi"><small>選定年齡 · 年繳保費</small><strong id="focusedPremium">—</strong><em id="focusedMonthly">—</em></div><div class="kpi"><small id="lifetimeLabel">試算至84歲 · 累計保費</small><strong id="totalLifetime">—</strong><em>未計折現、費率調整及理賠</em></div></div>
   <div class="age-focus"><div class="age-top"><strong>查看指定年齡的保費明細</strong><span class="selected"><span id="ageReadout">50</span> 歲</span></div><input id="focusRange" class="range" type="range" min="37" max="84" value="50" step="1" aria-label="查看年齡"><div class="slider-labels"><span id="rangeMin">37 歲</span><span>拖曳滑桿查看</span><span id="rangeMax">84 歲</span></div><div class="breakdown" id="breakdown"></div></div>
  </article>
  <article class="panel chart-panel"><div class="card-head"><div><h2>保費走勢</h2><p>圖表可點選年齡；虛線為相同主約商品、相同重大傷病總保額全放主約的對照</p></div><div class="chart-actions"><label class="compareToggle"><input type="checkbox" id="compareOn" checked> 顯示對照</label><div class="seg"><button type="button" id="annualBtn" class="active">年度</button><button type="button" id="cumulativeBtn">累計</button></div></div></div><div class="legend"><span><i style="--c:#00796f"></i>目前配置</span><span><i style="--c:#7e92ab"></i>全主約對照</span><span><i style="--c:#cf8d4c"></i>選取年齡</span></div><div class="chart-box"><svg id="chart" viewBox="0 0 880 300" role="img" aria-label="年度保費折線圖"></svg></div><div class="chart-summary" id="compareMessage"></div></article>
+ <article class="panel dual-panel" id="dualSection" aria-label="方案 A 與 B 保費比較">
+  <div class="card-head"><div><h2>方案 A／B 比較</h2><p>兩套設定可選不同主約、保額、投保年齡及附約；依實際年齡對齊，不是依保單年度對齊。</p></div><div class="chart-actions"><div class="seg"><button type="button" id="dualAnnualBtn" class="active">年度</button><button type="button" id="dualCumulativeBtn">累計</button></div><button type="button" class="btn" id="dualCsvBtn">↓ 比較CSV</button></div></div>
+  <div class="dual-metrics" id="dualMetrics"></div>
+  <div class="dual-focus"><div class="age-top"><strong>共同查看年齡</strong><output id="dualAgeOutput">50 歲</output></div><input id="dualFocusRange" class="range" type="range" min="0" max="99" value="50" step="1" aria-label="兩方案比較年齡"><div class="slider-labels"><span id="dualMinAge">—</span><span>滑動比較各年保費</span><span id="dualMaxAge">—</span></div></div>
+  <div class="dual-legend"><span><i style="--c:#00796f"></i>方案 A</span><span><i style="--c:#6679b8"></i>方案 B</span><span><i style="--c:#c18a4c"></i>選取年齡</span></div>
+  <div class="chart-box"><svg id="dualChart" viewBox="0 0 880 300" role="img" aria-label="雙方案保費比較折線圖"></svg></div>
+  <div class="dual-info" id="dualSummary">—</div>
+  <div class="table-scroll dual-table"><table class="year-table"><thead><tr><th>年齡</th><th>A 年繳</th><th>B 年繳</th><th>年繳差(A−B)</th><th>A 累計</th><th>B 累計</th><th>累計差(A−B)</th><th>A 重大保障</th><th>B 重大保障</th></tr></thead><tbody id="dualRows"></tbody></table></div>
+ </article>
  <article class="panel list-panel"><div class="card-head"><div><h2>逐年保費明細</h2><p>點選表格中的年度，即可同步更新圖表與上方數字。</p></div><button class="btn" type="button" id="copyBtn">複製目前試算摘要</button></div><div class="table-scroll" id="tableContainer"><table class="year-table"><thead><tr><th>年齡</th><th>重大主約</th><th>重大附約</th><th>癌症附約</th><th>醫療附約</th><th>年度合計</th><th>累計保費</th><th>重大保障</th></tr></thead><tbody id="yearRows"></tbody></table></div></article>
  <section class="notes"><h3>試算依據與重要限制</h3><ul>
  <li>資料來源包括全球人壽「醫卡讚85」DCE費率表、「醫卡好」DCF商品說明書20年期完整費率表，以及XDE、XCF、XHP商品說明書；DCF30年繳女性0、15、30、45歲年費率取自全球人壽官方網站，37歲女性379元／每萬元則為提供的業務報價，應另行核實。</li>
@@ -56,6 +83,7 @@
  <li>DCF目前只有20年繳完整年齡費率；其餘僅少數經公開資料或既有報價核對的組合。缺漏年齡／年期的費率須自行輸入每萬元保額的標準年繳費率，若未填寫會暫停試算，以免虛構保費。</li>
  <li>重大傷病附約、癌症附約及自負額醫療附約都採一年期費率。實際續保費率可能調整，不能視為保證報價。癌症附約首年與續保年度的給付內容及費率不同，已分別套用。</li>
  <li>試算假設所有保障從起始年齡同時投保、持續有效，且從未發生理賠導致保單或附約終止；不含核保加費、保費折讓、附約延續規則、其他保單、折現或未來新費率。</li>
+ <li>雙方案比較按「實際年齡」對齊；不同起保年齡與保障終止年齡的方案，累計金額代表不同的保障期間。對照需同時考慮重大傷病保額、保障期限與險種差異，不可僅憑累計保費判斷划算。</li>
  <li>重大傷病主約與附約合計保額最多在此工具限制為200萬元；實際是否能附加、最低保費、保額級距及個人核保結果，須以最新投保規則及保險公司書面報價確認。本工具不提供可承保保證。</li>
  </ul></section>
 </section>
@@ -68,7 +96,9 @@ const TERMS=[10,15,20,25,30];
 const ENDS={10:65,15:60,20:55,25:50,30:45};
 const PRODUCTS={DCE:'醫卡讚85重大傷病定期健康保險',DCF:'醫卡好重大傷病終身健康保險'};
 const defaults={sex:'female',startAge:37,term:30,mainProduct:'DCE',main:50,riderOn:true,rider:50,manualMainRate:'',cancer:true,cancerAmount:100,medical:true,medicalPlan:4,focusAge:50,view:'annual',compare:true};
-let state={...defaults},records=[],comparison=[];
+const scenarios={A:{...defaults},B:{...defaults,main:100,riderOn:false}};
+let activeScenario='A',state=scenarios.A,records=[],comparison=[];
+let dualEnabled=true,dualView='annual',dualFocusAge=50,dualData=null;
 const el=id=>document.getElementById(id);
 const fmt=n=>Math.round(n).toLocaleString('zh-TW');
 const money=n=>Number.isFinite(n)?'NT$ '+fmt(n):'—';
@@ -101,9 +131,29 @@ function premiumFor(age,c,unitRate){
  return {main,rider,cancer,medical,total:main+rider+cancer+medical,coverage:c.main+(c.riderOn&&age<=80?c.rider:0)};
 }
 function compute(c,unitRate){let sum=0,out=[];const end=c.mainProduct==='DCF'?99:84;for(let age=c.startAge;age<=end;age++){const row=premiumFor(age,c,unitRate);sum+=row.total;out.push({age,year:age-c.startAge+1,...row,cumulative:sum})}return out}
+function lastAgeFor(c){return c.mainProduct==='DCF'?99:84}
+function rateForConfig(c){
+ const built=RATES[c.mainProduct]?.[c.sex]?.[c.startAge]?.[c.term];
+ if(Number.isFinite(built))return built;
+ const manual=Number(c.manualMainRate);
+ return c.mainProduct==='DCF'&&c.manualMainRate!==''&&Number.isFinite(manual)&&manual>0&&manual<=10000?manual:null;
+}
+function recordsFor(c){const rate=rateForConfig(c);return rate===null?null:compute(c,rate)}
+function rowAt(rows,age){return rows?.[age-rows[0].age]??null}
+function moneyOrDash(n){return n===null||n===undefined?'—':money(n)}
+function statusAt(c,age){return age<c.startAge?'尚未投保':age>lastAgeFor(c)?'保障期滿':'正常'}
+function changeScenario(id){
+ if(!['A','B'].includes(id)||id===activeScenario)return;
+ scenarios[activeScenario]=state;
+ activeScenario=id;state=scenarios[id];render();
+}
+
 function updateUI(){
  normalize();
  el('mainProduct').value=state.mainProduct;
+ el('planABtn').classList.toggle('active',activeScenario==='A');el('planBBtn').classList.toggle('active',activeScenario==='B');
+ el('planABtn').setAttribute('aria-pressed',activeScenario==='A');el('planBBtn').setAttribute('aria-pressed',activeScenario==='B');
+ el('dualOn').checked=dualEnabled;el('dualSection').hidden=!dualEnabled;
  setOptions(el('startAge'),Array.from({length:66},(_,i)=>[i,i+' 歲']),state.startAge);
  setOptions(el('term'),TERMS.filter(t=>state.startAge<=ENDS[t]).map(t=>[t,t+' 年繳（最晚 '+ENDS[t]+' 歲投保）']),state.term);
  setOptions(el('mainAmount'),amountOptions(20,200),state.main);
@@ -167,7 +217,7 @@ function render(){
    el('breakdown').innerHTML='';el('yearRows').innerHTML='';
    el('chart').innerHTML='<text x="440" y="140" text-anchor="middle" fill="#69807c" font-size="18">請先輸入 DCF 主約年繳費率</text>';
    el('compareMessage').textContent='費率資料尚未齊全，不顯示可能誤導的總保費。';
-   return;
+   renderDual();return;
  }
  const unitRate=rateFor();records=compute(state,unitRate);
  const fullMain={...state,main:state.main+(state.riderOn?state.rider:0),riderOn:false};comparison=compute(fullMain,unitRate);
@@ -189,6 +239,88 @@ function render(){
  el('compareMessage').textContent=message;
  el('yearRows').innerHTML=records.map(d=>`<tr data-age="${d.age}" class="${d.age===state.focusAge?'selected':''}" tabindex="0" role="button" aria-label="查看${d.age}歲保費"><td>${d.age} 歲${d.age===state.startAge?' <small>首年</small>':''}</td><td>${fmt(d.main)}</td><td>${fmt(d.rider)}</td><td>${fmt(d.cancer)}</td><td>${fmt(d.medical)}</td><td><b>${fmt(d.total)}</b></td><td>${fmt(d.cumulative)}</td><td>${d.coverage} 萬</td></tr>`).join('');
  el('yearRows').querySelectorAll('tr').forEach(tr=>{const go=()=>{state.focusAge=Number(tr.dataset.age);render()};tr.addEventListener('click',go);tr.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});
+ renderDual();
+}
+
+function renderDual(){
+ const sec=el('dualSection');sec.hidden=!dualEnabled;
+ if(!dualEnabled){dualData=null;return}
+ const a=scenarios.A,b=scenarios.B;
+ const ar=recordsFor(a),br=recordsFor(b);
+ const mn=Math.min(a.startAge,b.startAge),mx=Math.max(lastAgeFor(a),lastAgeFor(b));
+ dualFocusAge=Math.max(mn,Math.min(mx,dualFocusAge));
+ el('dualFocusRange').min=mn;el('dualFocusRange').max=mx;el('dualFocusRange').value=dualFocusAge;
+ el('dualAgeOutput').textContent=dualFocusAge+' 歲';
+ el('dualMinAge').textContent=mn+' 歲';el('dualMaxAge').textContent=mx+' 歲';
+ el('dualAnnualBtn').classList.toggle('active',dualView==='annual');
+ el('dualCumulativeBtn').classList.toggle('active',dualView==='cumulative');
+ dualData=null;
+ if(!ar||!br){
+  const missing=[!ar?'A':null,!br?'B':null].filter(Boolean).join('、');
+  el('dualMetrics').innerHTML='';
+  el('dualChart').innerHTML='<text x="440" y="140" text-anchor="middle" fill="#69807c" font-size="16">請先補齊方案 '+missing+' 的 DCF 主約費率</text>';
+  el('dualSummary').textContent='方案 '+missing+' 尚缺正式年繳費率。請切換至對應方案，輸入每萬元保額年繳費率後才進行完整比較。';
+  el('dualRows').innerHTML='';el('dualCsvBtn').disabled=true;return;
+ }
+ dualData={a,b,ar,br,minAge:mn,maxAge:mx};el('dualCsvBtn').disabled=false;
+ const selectedA=rowAt(ar,dualFocusAge),selectedB=rowAt(br,dualFocusAge);
+ const planCard=(c,rows,key,row)=>`<div class="dual-metric ${key==='B'?'b':''}"><h3>方案 ${key}</h3><p>${c.sex==='female'?'女':'男'}性 · ${c.startAge}歲 · ${c.mainProduct} ${c.term}年繳 · 主約${c.main}萬${c.riderOn?'＋附約'+c.rider+'萬':'（無重大附約）'}</p><div class="value-row"><span>首年年繳</span><b>${money(rows[0].total)}</b></div><div class="value-row"><span>${dualFocusAge}歲年繳</span><b>${row?money(row.total):'—'}</b></div><div class="value-row"><span>各自保障期累計</span><b>${money(rows.at(-1).cumulative)}</b></div><div class="value-row"><span>${dualFocusAge}歲重大保障</span><b>${row?row.coverage+' 萬元':'無保障'}</b></div></div>`;
+ el('dualMetrics').innerHTML=planCard(a,ar,'A',selectedA)+planCard(b,br,'B',selectedB);
+ const delta=(selectedA?.total??null)!==null&&selectedB?selectedA.total-selectedB.total:null;
+ const sharedEnd=Math.min(lastAgeFor(a),lastAgeFor(b));
+ const cumA=rowAt(ar,sharedEnd)?.cumulative??(sharedEnd<a.startAge?0:ar.at(-1).cumulative);
+ const cumB=rowAt(br,sharedEnd)?.cumulative??(sharedEnd<b.startAge?0:br.at(-1).cumulative);
+ const cumDiff=cumA-cumB;
+ const detail=delta===null?'選取的年齡並非兩方案都在保障期間，無法直接比較當年保費。':`在 ${dualFocusAge} 歲時，方案 ${delta===0?'A、B 年繳相同':delta>0?'A 比 B 多繳 '+money(delta):'A 比 B 少繳 '+money(-delta)}。`;
+ const sumDetail=`共同截止 ${sharedEnd} 歲：A 累計 ${money(cumA)}，B 累計 ${money(cumB)}，A ${cumDiff>=0?'多':'少'}繳 ${money(Math.abs(cumDiff))}。`;
+ const ageWarning=a.startAge!==b.startAge?'兩方案起保年齡不同，累計保費代表不同投保年數。':'兩方案起保年齡相同。';
+ const endWarning=lastAgeFor(a)!==lastAgeFor(b)?`主約期限不同（A 至 ${lastAgeFor(a)} 歲；B 至 ${lastAgeFor(b)} 歲），比較不能忽略保障落差。`:'';
+ el('dualSummary').innerHTML=`<b>${detail}</b> ${sumDetail}<br>${ageWarning} ${endWarning} 重大傷病名目保障可能不同，保費較低不必然代表較適合。`;
+ const data=[];for(let age=mn;age<=mx;age++){
+   const x=rowAt(ar,age),y=rowAt(br,age);
+   data.push({age,x,y,annualA:x?.total??null,annualB:y?.total??null,cumA:x?.cumulative??(age>lastAgeFor(a)?ar.at(-1).cumulative:null),cumB:y?.cumulative??(age>lastAgeFor(b)?br.at(-1).cumulative:null)});
+ }
+ renderDualChart(data);
+ const diffCell=n=>Number.isFinite(n)?`<td class="${n>0?'diff-positive':n<0?'diff-negative':''}">${n>0?'+':''}${fmt(n)}</td>`:'<td>—</td>';
+ el('dualRows').innerHTML=data.map(d=>`<tr data-dualage="${d.age}" class="${d.age===dualFocusAge?'selected':''}" tabindex="0" role="button" aria-label="比較 ${d.age} 歲"><td>${d.age} 歲</td><td title="${statusAt(a,d.age)}">${d.x?fmt(d.x.total):'—'}</td><td title="${statusAt(b,d.age)}">${d.y?fmt(d.y.total):'—'}</td>${diffCell(d.x&&d.y?d.x.total-d.y.total:null)}<td>${d.cumA===null?'—':fmt(d.cumA)}</td><td>${d.cumB===null?'—':fmt(d.cumB)}</td>${diffCell(d.cumA!==null&&d.cumB!==null?d.cumA-d.cumB:null)}<td>${d.x?d.x.coverage+' 萬':'—'}</td><td>${d.y?d.y.coverage+' 萬':'—'}</td></tr>`).join('');
+ el('dualRows').querySelectorAll('tr').forEach(tr=>{const go=()=>{dualFocusAge=Number(tr.dataset.dualage);renderDual()};tr.addEventListener('click',go);tr.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});
+}
+function renderDualChart(data){
+ const svg=el('dualChart'),W=880,H=300,L=67,R=24,T=23,B=37;
+ const annual=dualView==='annual',aField=annual?'annualA':'cumA',bField=annual?'annualB':'cumB';
+ const nums=data.flatMap(d=>[d[aField],d[bField]]).filter(Number.isFinite);
+ const peak=Math.max(1,...nums),unit=Math.pow(10,Math.floor(Math.log10(peak/5))),upper=Math.max(5*unit,Math.ceil(peak/5/unit)*5*unit);
+ const minAge=data[0].age,maxAge=data.at(-1).age,deltaAge=Math.max(1,maxAge-minAge),pw=W-L-R,ph=H-T-B;
+ const x=age=>L+(age-minAge)/deltaAge*pw,y=value=>T+ph*(1-value/upper);
+ const tick=v=>v>=1e6?(v/1e6).toFixed(1)+'百萬':v>=10000?(v/1e4).toFixed(v%1e4?1:0)+'萬':fmt(v);
+ let out='';
+ for(let i=0;i<=5;i++){let v=upper*i/5,yy=y(v);out+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="#e5ede9"/><text x="${L-9}" y="${yy+4}" fill="#82918d" font-size="11" text-anchor="end">${tick(v)}</text>`}
+ const every=Math.max(1,Math.ceil(deltaAge/9));for(let age=minAge;age<=maxAge;age+=every)out+=`<text x="${x(age)}" y="${H-12}" text-anchor="middle" fill="#80918b" font-size="11">${age}</text>`;
+ if((maxAge-minAge)%every!==0)out+=`<text x="${x(maxAge)}" y="${H-12}" text-anchor="end" fill="#80918b" font-size="11">${maxAge}</text>`;
+ const path=field=>{let open=false,p='';for(const d of data){const v=d[field];if(!Number.isFinite(v)){open=false;continue}p+=(open?' L':'M')+x(d.age).toFixed(2)+','+y(v).toFixed(2);open=true}return p};
+ out+=`<path d="${path(aField)}" fill="none" stroke="#00796f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+ out+=`<path d="${path(bField)}" fill="none" stroke="#6679b8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+ const focus=data.find(d=>d.age===dualFocusAge),cx=x(dualFocusAge);
+ out+=`<line x1="${cx}" y1="${T}" x2="${cx}" y2="${H-B}" stroke="#c18a4c" stroke-dasharray="4 4" stroke-width="1.5"/>`;
+ for(const [field,color] of [[aField,'#00796f'],[bField,'#6679b8']])if(Number.isFinite(focus[field]))out+=`<circle cx="${cx}" cy="${y(focus[field])}" r="5.5" fill="${color}" stroke="white" stroke-width="2"/>`;
+ svg.innerHTML=out;
+ svg.setAttribute('aria-label',`方案A、B ${annual?'年度':'累計'}保費，${minAge}到${maxAge}歲，選定${dualFocusAge}歲`);
+ svg.onclick=e=>{const rect=svg.getBoundingClientRect();dualFocusAge=Math.max(minAge,Math.min(maxAge,Math.round(minAge+(((e.clientX-rect.left)/rect.width*W-L)/pw)*deltaAge)));renderDual()};
+}
+function downloadDualCSV(){
+ if(!dualData)return;
+ const {a,b,ar,br,minAge,maxAge}=dualData;
+ const header=['年齡','A投保年齡','A性別','A主約商品','A繳費年期','A主約保額(萬)','A重大附約保額(萬)','A癌症保額(萬)','A醫療計畫','A年繳','A累計','A重大保障(萬)','B投保年齡','B性別','B主約商品','B繳費年期','B主約保額(萬)','B重大附約保額(萬)','B癌症保額(萬)','B醫療計畫','B年繳','B累計','B重大保障(萬)','年度差(A-B)','累計差(A-B)'];
+ const rows=[];
+ for(let age=minAge;age<=maxAge;age++){
+  const ra=rowAt(ar,age),rb=rowAt(br,age);
+  const ac=ra?.cumulative??(age>lastAgeFor(a)?ar.at(-1).cumulative:null),bc=rb?.cumulative??(age>lastAgeFor(b)?br.at(-1).cumulative:null);
+  const conf=(c,r,cum)=>[c.startAge,c.sex==='female'?'女':'男',c.mainProduct,c.term,c.main,c.riderOn?c.rider:0,c.cancer?c.cancerAmount:0,c.medical?c.medicalPlan:0,r?.total??'',cum??'',r?.coverage??''];
+  rows.push([age,...conf(a,ra,ac),...conf(b,rb,bc),ra&&rb?ra.total-rb.total:'',ac!==null&&bc!==null?ac-bc:'']);
+ }
+ const csv='\ufeff'+[header,...rows].map(r=>r.join(',')).join('\r\n');
+ const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})),link=document.createElement('a');
+ link.href=url;link.download='全球人壽保費_A_B雙方案比較.csv';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);
 }
 function readControls(){
  const newProduct=el('mainProduct').value,newAge=Number(el('startAge').value),newTerm=Number(el('term').value);
@@ -204,7 +336,7 @@ for(const id of ['mainProduct','startAge','term','mainAmount','riderOn','riderAm
 el('femaleBtn').onclick=()=>{state.sex='female';state.manualMainRate='';render()};el('maleBtn').onclick=()=>{state.sex='male';state.manualMainRate='';render()};
 el('focusRange').oninput=e=>{state.focusAge=Number(e.target.value);render()};
 el('annualBtn').onclick=()=>{state.view='annual';render()};el('cumulativeBtn').onclick=()=>{state.view='cumulative';render()};
-el('resetBtn').onclick=()=>{state={...defaults};render()};
+el('resetBtn').onclick=()=>{state={...defaults};scenarios[activeScenario]=state;render()};
 el('downloadBtn').onclick=()=>{
  if(!records.length)return;
  const h=['主約商品','主約費率依據','投保年齡','性別','主約繳費年期','主約保額(萬)','重大附約啟用','重大附約保額(萬)','年齡','保單年度','主約年繳','重大傷病一年期附約','防癌附約','醫療附約','當年度合計','累計保費','重大傷病名目保障(萬)'];
@@ -220,8 +352,15 @@ el('copyBtn').onclick=async()=>{
  const txt=`【全球人壽保費試算（非正式報價）】\n${state.sex==='female'?'女性':'男性'}，${state.startAge}歲投保\n主約：${PRODUCTS[state.mainProduct]}（${state.mainProduct}），${state.term}年繳、保額${state.main}萬元（${Number.isFinite(known)?'內建':'手填'}費率，每萬元${rateFor()}元）\n重大傷病一年期附約：${state.riderOn?state.rider+'萬元':'未附加'}\n癌症附約：${state.cancer?state.cancerAmount+'萬元':'未附加'}；醫療附約：${state.medical?state.medicalPlan+'X':'未附加'}\n首年年繳：${money(records[0].total)}\n${state.focusAge}歲年繳：${money(v.total)}\n至${lastAge()}歲名目累計：${money(records.at(-1).cumulative)}\n依所附費率或手填費率試算，非正式報價；假設無理賠且未來費率不變。`;
  const ok=await copyText(txt),btn=el('copyBtn');btn.textContent=ok?'✓ 已複製':'複製失敗';setTimeout(()=>btn.textContent='複製目前試算摘要',1700);
 };
+el('planABtn').onclick=()=>changeScenario('A');
+el('planBBtn').onclick=()=>changeScenario('B');
+el('dualOn').onchange=e=>{dualEnabled=e.target.checked;renderDual()};
+el('copyAToB').onclick=()=>{scenarios.B={...scenarios.A};if(activeScenario==='B')state=scenarios.B;render()};
+el('dualAnnualBtn').onclick=()=>{dualView='annual';renderDual()};
+el('dualCumulativeBtn').onclick=()=>{dualView='cumulative';renderDual()};
+el('dualFocusRange').oninput=e=>{dualFocusAge=Number(e.target.value);renderDual()};
+el('dualCsvBtn').onclick=downloadDualCSV;
 render();
-
 </script>
 </body>
 </html>
